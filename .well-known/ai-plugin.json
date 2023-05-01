@@ -2,7 +2,7 @@
   "schema_version": "v1",
   "name_for_model": "googleSearch",
   "name_for_human": "Google Search Plugin",
-  "description_for_model": "Plugin for searching using Google Custom Search Engine and fetching the inner text of the first link in the search results.",
+  "description_for_model": "Plugin for searching using Google Custom Search Engine and fetching the first pages results including the full test of the first 3 pages and summaries based on your search query for the rest of the results.",
   "description_for_human": "Search using Google Custom Search Engine.",
   "auth": {
     "type": "none"

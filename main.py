@@ -5,7 +5,7 @@ import requests
 import os
 import json
 import yaml
-from utils import process_results
+from utils import process_results, process_results_deep
 
 
 debug = os.environ.get("DEBUG", False)
@@ -55,6 +55,35 @@ def search():
         return jsonify({"results": formatted_results[:10]})
     else:
         return jsonify({"error": "Error fetching search results"}), response.status_code
+
+@app.route('/search-deep', methods=['GET'])
+def searchDeep():
+    query = request.args.get('q', '')
+    if debug:
+        print(f"Received query: {query}")
+    if not query:
+        return jsonify({"error": "No query provided"}), 400
+
+    url = 'https://www.googleapis.com/customsearch/v1'
+    all_results = []
+    for i in range(3):
+        start = i * 10 + 1
+        params = {
+            'key': API_KEY,
+            'cx': CX,
+            'q': query,
+            'start': start
+        }
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            results = data.get('items', [])
+            all_results.extend(results)
+        else:
+            return jsonify({"error": "Error fetching search results"}), response.status_code
+
+    formatted_results = process_results_deep(all_results, query)
+    return jsonify({"results": formatted_results})
 
 @app.route('/.well-known/<path:filename>')
 def serve_well_known_files(filename):

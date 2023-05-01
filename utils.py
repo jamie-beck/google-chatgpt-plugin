@@ -111,3 +111,16 @@ def process_results(results, query):
         result.full_content = None
 
     return [res.to_dict() for res in formatted_results]
+
+
+def process_results_deep(results, query):
+    formatted_results = [SearchResult(res['title'], res['link']) for res in results]
+
+    for i, result in enumerate(formatted_results):
+        result.full_content = fetch_content(result.link) or "Error fetching content"
+        if debug:
+            print(f"Summarizing content for {result.title} {result.link}")
+        result.summary = summarize(result.full_content, query, max_tokens=250) or "Error fetching summary"
+        result.full_content = None
+
+    return [res.to_dict() for res in formatted_results]
